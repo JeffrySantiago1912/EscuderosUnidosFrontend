@@ -4,11 +4,9 @@ import toast from 'react-hot-toast'
 
 interface Props {
   onLogin: (email: string, password: string) => boolean
-  isDark: boolean
-  onToggleDark: () => void
 }
 
-export default function LoginPage({ onLogin, isDark, onToggleDark }: Props) {
+export default function LoginPage({ onLogin }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
