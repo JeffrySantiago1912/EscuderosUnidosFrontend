@@ -1,12 +1,10 @@
-import { Shield, LogOut, Moon, Sun } from 'lucide-react'
+import { Shield, LogOut } from 'lucide-react'
 
 interface Props {
   onLogout: () => void
-  isDark: boolean
-  onToggleDark: () => void
 }
 
-export default function Header({ onLogout, isDark, onToggleDark }: Props) {
+export default function Header({ onLogout }: Props) {
   return (
     <header className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 sticky top-0 z-40 shadow-sm dark:shadow-gray-900/50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -25,19 +23,6 @@ export default function Header({ onLogout, isDark, onToggleDark }: Props) {
         </div>
 
         <div className="flex items-center gap-1">
-          {/* Dark mode toggle */}
-          <button
-            onClick={onToggleDark}
-            title={isDark ? 'Modo claro' : 'Modo oscuro'}
-            className="flex items-center justify-center w-9 h-9 rounded-xl text-gray-400 dark:text-gray-500
-                       hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300
-                       transition-all duration-200"
-          >
-            {isDark ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
-          </button>
-
-          <div className="w-px h-5 bg-gray-200 dark:bg-gray-700 mx-1" />
-
           <button
             onClick={onLogout}
             className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400

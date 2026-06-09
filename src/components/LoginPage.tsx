@@ -1,14 +1,12 @@
 import { useState, FormEvent } from 'react'
-import { Shield, Eye, EyeOff, Loader2, Moon, Sun, BookOpen } from 'lucide-react'
+import { Shield, Eye, EyeOff, Loader2, BookOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Props {
   onLogin: (email: string, password: string) => boolean
-  isDark: boolean
-  onToggleDark: () => void
 }
 
-export default function LoginPage({ onLogin, isDark, onToggleDark }: Props) {
+export default function LoginPage({ onLogin }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
@@ -50,18 +48,6 @@ export default function LoginPage({ onLogin, isDark, onToggleDark }: Props) {
           style={{ background: 'radial-gradient(circle, #0ea5e9, transparent)' }}
         />
       </div>
-
-      {/* Dark mode toggle — top right */}
-      <button
-        onClick={onToggleDark}
-        title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-        className="absolute top-5 right-5 z-20 flex items-center justify-center w-10 h-10 rounded-xl
-                   bg-white/70 dark:bg-white/10 backdrop-blur border border-white/60 dark:border-white/10
-                   text-slate-500 dark:text-sky-300 hover:text-sky-600 dark:hover:text-white
-                   shadow-sm transition-all duration-200 hover:scale-105"
-      >
-        {isDark ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
-      </button>
 
       {/* Card */}
       <div className="relative z-10 w-full max-w-md animate-fade-in shadow-2xl rounded-3xl overflow-hidden
