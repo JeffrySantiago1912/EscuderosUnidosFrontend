@@ -1,12 +1,14 @@
 import { useState, FormEvent } from 'react'
-import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Shield, Eye, EyeOff, Loader2, Moon, Sun, BookOpen } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 interface Props {
   onLogin: (email: string, password: string) => boolean
+  isDark: boolean
+  onToggleDark: () => void
 }
 
-export default function LoginPage({ onLogin }: Props) {
+export default function LoginPage({ onLogin, isDark, onToggleDark }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
@@ -15,36 +17,90 @@ export default function LoginPage({ onLogin }: Props) {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise((r) => setTimeout(r, 600))
+    await new Promise((r) => setTimeout(r, 700))
     const ok = onLogin(email, password)
     setLoading(false)
     if (!ok) toast.error('Credenciales incorrectas')
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 p-4">
-      {/* Background pattern */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-white/5 blur-3xl" />
+    <div className="min-h-screen flex items-center justify-center p-4 transition-colors duration-300
+                    bg-gradient-to-br from-slate-100 via-sky-50 to-blue-100
+                    dark:bg-none dark:bg-[#060f1e]">
+
+      {/* Background blobs — light mode */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none dark:hidden">
+        <div className="absolute -top-32 -right-32 w-[32rem] h-[32rem] rounded-full bg-sky-200/60 blur-3xl" />
+        <div className="absolute -bottom-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-blue-200/50 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full bg-cyan-100/60 blur-2xl" />
       </div>
 
-      <div className="relative w-full max-w-md animate-fade-in">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur mb-4 border border-white/20">
-            <Shield className="w-10 h-10 text-gold-400" strokeWidth={1.5} />
+      {/* Background blobs — dark mode */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none hidden dark:block">
+        <div
+          className="absolute -top-40 -right-40 w-[36rem] h-[36rem] rounded-full opacity-20 blur-3xl"
+          style={{ background: 'radial-gradient(circle, #0369a1, transparent)' }}
+        />
+        <div
+          className="absolute -bottom-40 -left-40 w-[32rem] h-[32rem] rounded-full opacity-15 blur-3xl"
+          style={{ background: 'radial-gradient(circle, #075985, transparent)' }}
+        />
+        <div
+          className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full opacity-10 blur-2xl"
+          style={{ background: 'radial-gradient(circle, #0ea5e9, transparent)' }}
+        />
+      </div>
+
+      {/* Dark mode toggle — top right */}
+      <button
+        onClick={onToggleDark}
+        title={isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+        className="absolute top-5 right-5 z-20 flex items-center justify-center w-10 h-10 rounded-xl
+                   bg-white/70 dark:bg-white/10 backdrop-blur border border-white/60 dark:border-white/10
+                   text-slate-500 dark:text-sky-300 hover:text-sky-600 dark:hover:text-white
+                   shadow-sm transition-all duration-200 hover:scale-105"
+      >
+        {isDark ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
+      </button>
+
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md animate-fade-in shadow-2xl rounded-3xl overflow-hidden
+                      dark:shadow-sky-900/30">
+
+        {/* ── Card header — gradient azul ── */}
+        <div className="relative px-10 pt-10 pb-8 text-center overflow-hidden
+                        bg-gradient-to-br from-sky-500 via-blue-600 to-blue-700
+                        dark:from-sky-700 dark:via-blue-800 dark:to-blue-900">
+
+          {/* Decorative circles inside header */}
+          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/5" />
+          <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full bg-white/5" />
+
+          {/* Icon */}
+          <div className="relative inline-flex items-center justify-center mb-5">
+            <div className="absolute inset-0 rounded-2xl bg-white/20 blur-xl scale-150" />
+            <div className="relative w-20 h-20 rounded-2xl bg-white/15 border border-white/30 flex items-center justify-center backdrop-blur-sm">
+              <Shield className="w-10 h-10 text-white" strokeWidth={1.5} />
+            </div>
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Escuderos Unidos</h1>
-          <p className="text-brand-200 mt-1 text-sm">Corrector del Apóstol Miguel Bogaert</p>
+
+          <h1 className="text-2xl font-black text-white tracking-tight">Escuderos Unidos</h1>
+          <div className="flex items-center justify-center gap-1.5 mt-2">
+            <BookOpen className="w-3.5 h-3.5 text-sky-200" strokeWidth={1.8} />
+            <p className="text-sky-100 text-sm">Corrector del Apóstol Miguel Bogaert</p>
+          </div>
         </div>
 
-        {/* Card */}
-        <div className="card p-8 backdrop-blur-sm bg-white/95">
-          <h2 className="text-xl font-semibold text-gray-800 mb-6">Iniciar sesión</h2>
+        {/* ── Card body — form ── */}
+        <div className="px-8 py-8 bg-white dark:bg-slate-900">
+          <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-6 tracking-wide">
+            Iniciar sesión
+          </h2>
+
           <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
                 Correo electrónico
               </label>
               <input
@@ -53,14 +109,19 @@ export default function LoginPage({ onLogin }: Props) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="usuario@dominio.com"
                 required
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50
-                           text-gray-900 text-sm placeholder:text-gray-400
-                           focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700
+                           bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100
+                           placeholder:text-slate-300 dark:placeholder:text-slate-600 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent
                            transition-all duration-200"
               />
             </div>
+
+            {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Contraseña</label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
+                Contraseña
+              </label>
               <div className="relative">
                 <input
                   type={showPass ? 'text' : 'password'}
@@ -68,36 +129,51 @@ export default function LoginPage({ onLogin }: Props) {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  className="w-full px-4 py-2.5 pr-11 rounded-xl border border-gray-200 bg-gray-50
-                             text-gray-900 text-sm placeholder:text-gray-400
-                             focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+                  className="w-full px-4 py-3 pr-12 rounded-xl border border-slate-200 dark:border-slate-700
+                             bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100
+                             placeholder:text-slate-300 dark:placeholder:text-slate-600 text-sm
+                             focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent
                              transition-all duration-200"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-sky-500 dark:hover:text-sky-400 transition-colors"
                 >
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
-            <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-3">
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl
+                         text-white font-bold text-sm tracking-wide shadow-lg
+                         bg-gradient-to-r from-sky-500 to-blue-600
+                         hover:from-sky-600 hover:to-blue-700
+                         dark:from-sky-600 dark:to-blue-700 dark:hover:from-sky-500 dark:hover:to-blue-600
+                         disabled:opacity-50 disabled:cursor-not-allowed
+                         transition-all duration-200 active:scale-[0.98]
+                         focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2
+                         focus:ring-offset-white dark:focus:ring-offset-slate-900"
+            >
               {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Verificando…
-                </>
+                <><Loader2 className="w-4 h-4 animate-spin" /> Verificando…</>
               ) : (
-                'Entrar'
+                'Entrar al sistema'
               )}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-brand-300 text-xs mt-6">
-          Ministerio Monte de Dios • Uso exclusivo interno
-        </p>
+        {/* ── Card footer ── */}
+        <div className="px-8 py-3.5 bg-slate-50 dark:bg-slate-950 border-t border-slate-100 dark:border-slate-800 text-center">
+          <p className="text-xs text-slate-400 dark:text-slate-600 tracking-wide">
+            Ministerio Monte de Dios &nbsp;•&nbsp; Uso exclusivo interno
+          </p>
+        </div>
       </div>
     </div>
   )

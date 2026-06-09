@@ -12,4 +12,4 @@ export interface SpellCheckResult {
   matches: SpellMatch[]
 }
 
-export type InputMode = 'text' | 'pdf' | 'image'
+export type InputMode = 'text' | 'pdf' | 'image' | 'txt'

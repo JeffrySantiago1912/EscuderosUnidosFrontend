@@ -20,7 +20,6 @@ export default function AnnotatedText({ text, matches, onTextChange, onMatchesCh
 
   if (!matches.length) return null
 
-  // Build segments
   const segments: { text: string; matchIdx: number | null }[] = []
   let cursor = 0
   const sorted = [...matches].map((m, i) => ({ ...m, _idx: i })).sort((a, b) => a.offset - b.offset)
@@ -53,7 +52,7 @@ export default function AnnotatedText({ text, matches, onTextChange, onMatchesCh
   return (
     <div className="relative">
       <div
-        className="p-4 rounded-2xl border border-gray-200 bg-white leading-relaxed text-sm text-gray-800 whitespace-pre-wrap"
+        className="p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 leading-relaxed text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap"
         onClick={() => setPopup(null)}
       >
         {segments.map((seg, i) => {
@@ -77,25 +76,25 @@ export default function AnnotatedText({ text, matches, onTextChange, onMatchesCh
         if (!match) return null
         return (
           <div
-            className="fixed z-50 bg-white rounded-2xl shadow-xl border border-gray-200 p-3 min-w-48 max-w-64 animate-slide-up"
+            className="fixed z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-3 min-w-48 max-w-64 animate-slide-up"
             style={{ top: popup.y, left: Math.min(popup.x, window.innerWidth - 260) }}
             onClick={(e) => e.stopPropagation()}
           >
-            <p className="text-xs text-gray-500 mb-2 px-1">{match.shortMessage}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mb-2 px-1">{match.shortMessage}</p>
             {match.replacements.length > 0 ? (
               <div className="flex flex-col gap-1">
                 {match.replacements.map((r) => (
                   <button
                     key={r}
                     onClick={() => accept(match, r)}
-                    className="text-left px-3 py-1.5 rounded-xl text-sm font-medium text-brand-800 hover:bg-brand-50 transition-colors"
+                    className="text-left px-3 py-1.5 rounded-xl text-sm font-medium text-brand-800 dark:text-brand-300 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors"
                   >
                     {r}
                   </button>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-gray-400 italic px-1">Sin sugerencias</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 italic px-1">Sin sugerencias</p>
             )}
           </div>
         )
