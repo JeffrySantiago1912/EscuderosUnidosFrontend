@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [mode, setMode] = useState<InputMode>('text')
   const [text, setText] = useState('')
   const [checking, setChecking] = useState(false)
+  const [progress, setProgress] = useState(0)
   const [matches, setMatches] = useState<SpellMatch[] | null>(null)
 
   const handleModeChange = (m: InputMode) => {
@@ -30,9 +31,10 @@ export default function Dashboard() {
     if (trimmed.length < 2) { toast.error('El texto es muy corto'); return }
 
     setChecking(true)
+    setProgress(0)
     setMatches(null)
     try {
-      const result = await checkSpelling(trimmed)
+      const result = await checkSpelling(trimmed, setProgress)
       setMatches(result)
       if (result.length === 0) toast.success('¡Texto sin errores ortográficos!')
       else toast(`Se encontraron ${result.length} sugerencia${result.length > 1 ? 's' : ''}`, { icon: '✏️' })
@@ -67,7 +69,7 @@ export default function Dashboard() {
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(9)
     doc.setTextColor(120, 80, 200)
-    doc.text('Corrector del Apóstol Miguel Bogaert', margin, y)
+    doc.text('Corrector', margin, y)
     y += 5
 
     // Date
@@ -166,7 +168,7 @@ export default function Dashboard() {
               <textarea
                 value={text}
                 onChange={(e) => { setText(e.target.value); setMatches(null) }}
-                placeholder="Escribe o pega aquí el texto del Apóstol Miguel Bogaert para revisar su ortografía…"
+                placeholder="Escribe o pega aquí el texto para revisar su ortografía…"
                 rows={12}
                 className={inputClass}
               />
@@ -226,7 +228,7 @@ export default function Dashboard() {
                   className="btn-primary text-xs py-2"
                 >
                   {checking ? (
-                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Revisando…</>
+                    <><Loader2 className="w-3.5 h-3.5 animate-spin" /> {progress > 0 && progress < 100 ? `Revisando ${progress}%…` : 'Revisando…'}</>
                   ) : (
                     <><Wand2 className="w-3.5 h-3.5" /> Corregir</>
                   )}

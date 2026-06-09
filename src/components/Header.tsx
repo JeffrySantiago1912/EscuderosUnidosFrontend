@@ -16,9 +16,6 @@ export default function Header({ onLogout }: Props) {
             <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm leading-none block">
               Escuderos Unidos
             </span>
-            <span className="text-xs text-gray-400 dark:text-gray-500 leading-none">
-              Apóstol Miguel Bogaert
-            </span>
           </div>
         </div>
 

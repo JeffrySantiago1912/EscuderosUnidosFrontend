@@ -1,10 +1,38 @@
 import type { SpellMatch } from '../types'
 
 const LT_API = 'https://api.languagetool.org/v2/check'
+const CHUNK_SIZE = 15000 // safely under LT free-tier limit (~20 000 chars)
 
-export async function checkSpelling(text: string): Promise<SpellMatch[]> {
+function splitIntoChunks(text: string): Array<{ text: string; offset: number }> {
+  const chunks: Array<{ text: string; offset: number }> = []
+  let start = 0
+
+  while (start < text.length) {
+    if (start + CHUNK_SIZE >= text.length) {
+      chunks.push({ text: text.slice(start), offset: start })
+      break
+    }
+
+    // Prefer splitting at a newline or space to avoid cutting mid-word
+    let end = start + CHUNK_SIZE
+    const nl = text.lastIndexOf('\n', end)
+    if (nl > start + CHUNK_SIZE / 2) {
+      end = nl + 1
+    } else {
+      const sp = text.lastIndexOf(' ', end)
+      if (sp > start + CHUNK_SIZE / 2) end = sp + 1
+    }
+
+    chunks.push({ text: text.slice(start, end), offset: start })
+    start = end
+  }
+
+  return chunks
+}
+
+async function checkChunk(chunkText: string): Promise<SpellMatch[]> {
   const body = new URLSearchParams({
-    text,
+    text: chunkText,
     language: 'es',
     enabledOnly: 'false',
   })
@@ -13,6 +41,7 @@ export async function checkSpelling(text: string): Promise<SpellMatch[]> {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),
+    signal: AbortSignal.timeout(60000),
   })
 
   if (!res.ok) throw new Error('Error al conectar con el corrector ortográfico')
@@ -32,6 +61,27 @@ export async function checkSpelling(text: string): Promise<SpellMatch[]> {
       description: (m.rule as { description: string }).description,
     },
   }))
+}
+
+export async function checkSpelling(
+  text: string,
+  onProgress?: (pct: number) => void,
+): Promise<SpellMatch[]> {
+  const chunks = splitIntoChunks(text)
+  const allMatches: SpellMatch[] = []
+
+  for (let i = 0; i < chunks.length; i++) {
+    const { text: chunkText, offset } = chunks[i]
+    const matches = await checkChunk(chunkText)
+
+    for (const m of matches) {
+      allMatches.push({ ...m, offset: m.offset + offset })
+    }
+
+    onProgress?.(Math.round(((i + 1) / chunks.length) * 100))
+  }
+
+  return allMatches
 }
 
 export function applyCorrection(text: string, match: SpellMatch, replacement: string): string {

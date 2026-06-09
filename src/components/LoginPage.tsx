@@ -4,9 +4,11 @@ import toast from 'react-hot-toast'
 
 interface Props {
   onLogin: (email: string, password: string) => boolean
+  isDark: boolean
+  onToggleDark: () => void
 }
 
-export default function LoginPage({ onLogin }: Props) {
+export default function LoginPage({ onLogin, isDark, onToggleDark }: Props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPass, setShowPass] = useState(false)
@@ -73,7 +75,7 @@ export default function LoginPage({ onLogin }: Props) {
           <h1 className="text-2xl font-black text-white tracking-tight">Escuderos Unidos</h1>
           <div className="flex items-center justify-center gap-1.5 mt-2">
             <BookOpen className="w-3.5 h-3.5 text-sky-200" strokeWidth={1.8} />
-            <p className="text-sky-100 text-sm">Corrector del Apóstol Miguel Bogaert</p>
+            <p className="text-sky-100 text-sm">Corrector</p>
           </div>
         </div>
 
